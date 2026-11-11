@@ -10,12 +10,16 @@ test('shipped client factory retains the skin through Host appearance hydration 
     const node={tag,dataset:{},style:{},setAttribute(){},append(child){node.child=child},remove(){nodes.delete(node)}};
     return node;
   };
-  const body={dataset:{},prepend(node){nodes.add(node)}};
+  const body={dataset:{},attributes:new Set(),prepend(node){nodes.add(node)},
+    setAttribute(name){this.attributes.add(name)},removeAttribute(name){this.attributes.delete(name)},
+    hasAttribute(name){return this.attributes.has(name)}};
+  let observerCallback;
   const sandbox={
     window:{__ModuleLoader__:{load({factory}){plugin=factory(()=>{throw Error('runtime imports must remain empty')})}}},
     document:{body,head:{append(node){nodes.add(node)}},hidden:false,addEventListener(){},removeEventListener(){}},
     navigator:{},console:{warn(){}},
     matchMedia:()=>({matches:false,addEventListener(){},removeEventListener(){}}),
+    MutationObserver:class{constructor(callback){observerCallback=callback}observe(){}disconnect(){}},
     ResizeObserver:class{observe(){}disconnect(){}},
     requestAnimationFrame:()=>1,cancelAnimationFrame:()=>cancelled++,
   };
@@ -32,6 +36,10 @@ test('shipped client factory retains the skin through Host appearance hydration 
   plugin.apply(ctx);await Promise.resolve();await Promise.resolve();
   assert.equal(current,'system','skin must not persist an appearance preference');
   assert.equal(nodes.size,2);assert.equal(body.dataset.galaxyActive,'');
+  assert.ok(body.hasAttribute('data-ds-dark-theme'),'active skin must keep the dark marker for static-surface components');
+  body.removeAttribute('data-ds-dark-theme');
+  observerCallback();
+  assert.ok(body.hasAttribute('data-ds-dark-theme'),'a Host toggle must not leave a light static surface behind');
   for(current of ['light','dark','system']){
     assert.equal(palette['--dsw-alias-label-primary'].light,'#f4f6ff');
     assert.equal(palette['--dsw-alias-label-primary'].dark,'#f4f6ff');
@@ -40,4 +48,5 @@ test('shipped client factory retains the skin through Host appearance hydration 
   for(const cleanup of effects.reverse())cleanup();
   assert.equal(nodes.size,0);assert.equal(Object.keys(palette).length,0);
   assert.equal(body.dataset.galaxyActive,undefined);assert.ok(cancelled>0);
+  assert.equal(body.hasAttribute('data-ds-dark-theme'),false,'disabling the skin restores the Host appearance');
 });

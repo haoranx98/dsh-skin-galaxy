@@ -6,8 +6,14 @@ export const styles = `
     radial-gradient(ellipse at 35% 65%,#603f7455,transparent 55%),#040817;
 }
 [data-galaxy-sky] canvas { width: 100%; height: 100%; display: block; opacity: 0; }
-body[data-galaxy-active] { background: #040817; isolation: isolate; }
+body[data-galaxy-active] { background: #040817; isolation: isolate; color-scheme: dark; }
 body[data-galaxy-active] #root { position: relative; z-index: 1; }
+/* DSH paints the changed-files header and presented-file cards from static
+   palette entries. Their dark variants key off the marker the client keeps on,
+   and these two rules tint that dark fill to the sky instead of neutral gray. */
+body[data-galaxy-active] [data-changed-files] { --changes-fill: rgba(26,38,64,0.94); --changes-hover: rgba(38,51,84,0.96); }
+body[data-galaxy-active] [data-presented-file] { background: rgba(26,38,64,0.94); }
+body[data-galaxy-active] [data-presented-file]:hover { background: rgba(38,51,84,0.96); }
 /* The prose backing isolates glyphs from bright dust lanes without obscuring the sky. */
 body[data-galaxy-active] [class*="_markdown_"] {
   background: rgba(14, 23, 44, 0.88);
