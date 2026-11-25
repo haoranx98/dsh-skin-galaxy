@@ -55,6 +55,10 @@ dsh plugin --profile web add /绝对路径/dsh-skin-galaxy
 说明：本皮肤在 DSH Web（0.2.2-alpha.2）上验证通过；Desktop 尚未实测，若安装后没有效果，请停用 dsh-skin-galaxy 并反馈。
 ```
 
+## 0.1.9 气泡与星空融合
+
+DS Bot 的聊天气泡取自它自己主题里的 `--bt-bubble`（深色下接近实心黑）。星河在 `html body` 上以更高优先级把 `--bt-*` 重述为半透明深蓝，气泡让星空透出；只改 `--bt-*` 变量，不影响其它界面。
+
 ## 0.1.8 根节点 token 兜底
 
 有些插件（例如 DS Bot）会在自己加载时向宿主注册 shell token，按保存的外观偏好把 `--dsw-alias-bg-base` 等重新指到浅色，覆盖掉皮肤。星河现在把调色板同时写在应用根节点 `#root` 上，后注册的宿主层无法再把应用内的底色改白。

@@ -1,6 +1,6 @@
 {
   "name": "dsh-skin-galaxy",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "星河 · A procedural WebGPU Milky Way skin for DeepSeek Harness",
   "type": "module",
   "license": "MIT",
